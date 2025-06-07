@@ -1,0 +1,47 @@
+# Commandes Git rapides pour déployer
+
+## 🚀 Première fois (initialisation)
+
+```bash
+# 1. Ouvrir PowerShell dans le dossier du projet
+cd C:\Users\USER\Documents\dev\task-manager
+
+# 2. Initialiser Git
+git init
+
+# 3. Ajouter tous les fichiers
+git add .
+
+# 4. Premier commit
+git commit -m "Initial commit - Daily Task Logger v2.0"
+
+# 5. Ajouter le remote (remplacer VOTRE-USERNAME)
+git remote add origin https://github.com/VOTRE-USERNAME/task-manager.git
+
+# 6. Pousser le code
+git push -u origin main
+```
+
+## 🔄 Mises à jour futures
+
+```bash
+# Après avoir fait des modifications
+git add .
+git commit -m "Description des changements"
+git push
+```
+
+## ⚙️ Activer GitHub Pages
+
+1. Aller sur GitHub → Settings → Pages
+2. Source : Deploy from a branch
+3. Branch : main
+4. Folder : / (root)
+5. Save
+
+## 🌐 Votre site sera disponible à :
+```
+https://VOTRE-USERNAME.github.io/task-manager
+```
+
+Attendez 2-5 minutes après l'activation !

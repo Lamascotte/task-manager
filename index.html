@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Task Logger - Connexion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#60a5fa',
+                        accent: '#1d4ed8',
+                        dark: '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-cyan-50 min-h-screen">
+    <!-- Page de connexion -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <!-- Logo et titre -->
+            <div class="text-center mb-8">
+                <div class="bg-primary w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-clipboard-list text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-dark mb-2">Daily Task Logger</h1>
+                <p class="text-gray-600">Connectez-vous pour accéder à votre espace</p>
+            </div>
+            <!-- Formulaire de connexion -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label for="username" class="block text-gray-700 font-medium mb-2">
+                            <i class="fas fa-user mr-2"></i>Nom d'utilisateur
+                        </label>
+                        <input type="text" id="username" required 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                            placeholder="Entrez votre nom d'utilisateur">
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-gray-700 font-medium mb-2">
+                            <i class="fas fa-lock mr-2"></i>Mot de passe
+                        </label>
+                        <input type="password" id="password" required 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                            placeholder="Entrez votre mot de passe">
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-primary hover:bg-accent text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Se connecter
+                    </button>
+                </form>
+
+                <!-- Message d'erreur -->
+                <div id="errorMessage" class="hidden mt-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <span id="errorText"></span>
+                </div>
+                <!-- Comptes de test -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h3 class="text-sm font-medium text-gray-700 mb-3">Comptes de test disponibles :</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between items-center p-2 bg-blue-50 rounded">
+                            <span><strong>Admin:</strong> admin / admin123</span>
+                            <button onclick="fillLogin('admin', 'admin123')" class="text-primary hover:text-accent">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center p-2 bg-green-50 rounded">
+                            <span><strong>Utilisateur:</strong> user / user123</span>
+                            <button onclick="fillLogin('user', 'user123')" class="text-primary hover:text-accent">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bouton de debug/reset -->
+                <div class="mt-4 text-center">
+                    <button onclick="resetData()" class="text-xs text-gray-500 hover:text-gray-700 underline">
+                        🔧 Reset données (debug)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pages principales (cachées par défaut) -->
+    <div id="appContent" class="hidden">
+        <!-- Le contenu sera chargé dynamiquement selon le rôle -->
+    </div>
+    <!-- Scripts - Ordre corrigé et nettoyé -->
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/services/storageService.js"></script>
+    <script src="js/services/authService.js"></script>
+    <script src="js/services/clientService.js"></script>
+    <script src="js/services/projectService.js"></script>
+    <script src="js/services/taskService.js"></script>
+    <script src="js/utils/testData.js"></script>
+    <script src="js/components/navigation.js"></script>
+    <script src="js/components/header.js"></script>
+    <script src="js/components/statsCards.js"></script>
+    <script src="js/components/adminStatsCards.js"></script>
+    <script src="js/components/taskForm.js"></script>
+    <script src="js/components/taskList.js"></script>
+    <script src="js/components/adminDashboard.js"></script>
+    <script src="js/components/adminPanel.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Fonction globale pour remplir le formulaire de connexion
+        function fillLogin(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+        }
+        
+        // Fonction de reset pour le debug
+        function resetData() {
+            if (confirm('⚠️ Cela va supprimer toutes les données. Continuer ?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

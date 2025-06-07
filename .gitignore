@@ -1,0 +1,36 @@
+# Système
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Temporaires
+*.tmp
+*.temp
+*.swp
+*~
+
+# Node (si utilisé plus tard)
+node_modules/
+npm-debug.log*
+
+# Environnement (si utilisé plus tard)
+.env
+.env.local
+
+# Builds (si utilisé plus tard)
+dist/
+build/
+
+# Documentation locale
+*.draft.md
+TODO.md
+
+# Fichiers de test
+test-*.html
+test-*.js
+
+# Données sensibles
+credentials.json
+secrets.json
