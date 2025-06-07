@@ -52,6 +52,16 @@ class TaskService {
         return tasks.filter(t => t.userId === userId);
     }
 
+    static getByClientId(clientId) {
+        const tasks = this.getAll();
+        return tasks.filter(t => t.clientId === clientId);
+    }
+
+    static getByProjectId(projectId) {
+        const tasks = this.getAll();
+        return tasks.filter(t => t.projectId === projectId);
+    }
+
     static getFilteredTasks(userId, filterMode) {
         const userTasks = this.getByUserId(userId);
         const today = new Date();
