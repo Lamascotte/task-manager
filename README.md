@@ -7,7 +7,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-2.0-38B2AC.svg)
 
-### 🚀 [Voir la démo en direct](https://votreusername.github.io/task-manager) | 📚 [Documentation](./QUICK_START.md) | 👨‍💻 [Guide développeur](./ARCHITECTURE.md)
+### 🚀 [Voir la démo en direct](https://lamascotte.github.io/task-manager) | 📚 [Documentation](./QUICK_START.md) | 👨‍💻 [Guide développeur](./ARCHITECTURE.md)
 
 </div>
 
@@ -296,7 +296,7 @@ Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de 
 
 **Lamascotte**
 - 📧 Email : sandouvivien@gmail.com
-- 🔗 GitHub : [@votreusername](https://github.com/votreusername)
+- 🔗 GitHub : [@Lamascotte](https://github.com/Lamascotte)
 
 ---
 
