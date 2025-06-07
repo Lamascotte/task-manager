@@ -25,6 +25,9 @@ class AdminDashboard {
                     <button id="showProjects" class="nav-btn">
                         <i class="fas fa-project-diagram mr-2"></i>Gestion projets
                     </button>
+                    <button id="showNewTask" class="nav-btn">
+                        <i class="fas fa-plus-circle mr-2"></i>Nouvelle tâche
+                    </button>
                 </div>
 
                 <!-- Contenu dynamique -->
@@ -57,6 +60,11 @@ class AdminDashboard {
             this.showProjects();
         });
 
+        document.getElementById('showNewTask').addEventListener('click', () => {
+            this.switchView('newTask');
+            this.showNewTask();
+        });
+
         // Header logout
         Header.init(() => {
             AuthService.logout();
@@ -73,7 +81,8 @@ class AdminDashboard {
         const viewMap = {
             'tasks': 'showAllTasks',
             'clients': 'showClients', 
-            'projects': 'showProjects'
+            'projects': 'showProjects',
+            'newTask': 'showNewTask'
         };
         
         document.getElementById(viewMap[activeView]).classList.add('active');
@@ -167,13 +176,13 @@ class AdminDashboard {
                             <i class="fas fa-user text-gray-400 text-xs mr-1"></i>
                             <span class="font-medium">${escapeHtml(task.userName)}</span>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center cursor-pointer hover:text-blue-600" onclick="AdminDashboard.showClientDetail(${task.clientId})">
                             <i class="fas fa-building text-gray-400 text-xs mr-1"></i>
-                            <span>${escapeHtml(task.clientName)}</span>
+                            <span class="hover:underline">${escapeHtml(task.clientName)}</span>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center cursor-pointer hover:text-blue-600" onclick="AdminDashboard.showProjectDetail(${task.projectId})">
                             <i class="fas fa-project-diagram text-gray-400 text-xs mr-1"></i>
-                            <span>${escapeHtml(task.projectName)}</span>
+                            <span class="hover:underline">${escapeHtml(task.projectName)}</span>
                         </div>
                         <div class="flex items-center">
                             <i class="far fa-calendar text-gray-400 text-xs mr-1"></i>
@@ -324,13 +333,13 @@ class AdminDashboard {
         clientsList.innerHTML = '';
         clients.forEach(client => {
             const clientDiv = document.createElement('div');
-            clientDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-3';
+            clientDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-3 hover:bg-gray-100 transition-colors';
             clientDiv.innerHTML = `
-                <div>
+                <div class="flex-1 cursor-pointer" onclick="AdminDashboard.showClientDetail(${client.id})">
                     <div class="font-medium text-gray-800">${escapeHtml(client.name)}</div>
                     ${client.description ? `<div class="text-sm text-gray-600">${escapeHtml(client.description)}</div>` : ''}
                 </div>
-                <button onclick="AdminDashboard.deleteClient(${client.id})" class="text-red-500 hover:text-red-700">
+                <button onclick="event.stopPropagation(); AdminDashboard.deleteClient(${client.id})" class="text-red-500 hover:text-red-700">
                     <i class="fas fa-trash"></i>
                 </button>
             `;
@@ -427,14 +436,14 @@ class AdminDashboard {
         projects.forEach(project => {
             const client = ClientService.getById(project.clientId);
             const projectDiv = document.createElement('div');
-            projectDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-3';
+            projectDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg mb-3 hover:bg-gray-100 transition-colors';
             projectDiv.innerHTML = `
-                <div>
+                <div class="flex-1 cursor-pointer" onclick="AdminDashboard.showProjectDetail(${project.id})">
                     <div class="font-medium text-gray-800">${escapeHtml(project.name)}</div>
                     <div class="text-sm text-gray-600">Client: ${escapeHtml(client ? client.name : 'Client supprimé')}</div>
                     ${project.description ? `<div class="text-sm text-gray-600">${escapeHtml(project.description)}</div>` : ''}
                 </div>
-                <button onclick="AdminDashboard.deleteProject(${project.id})" class="text-red-500 hover:text-red-700">
+                <button onclick="event.stopPropagation(); AdminDashboard.deleteProject(${project.id})" class="text-red-500 hover:text-red-700">
                     <i class="fas fa-trash"></i>
                 </button>
             `;
@@ -496,11 +505,76 @@ class AdminDashboard {
         }
     }
 
+    static editClient(id) {
+        // TODO: Implémenter l'édition de client dans une prochaine version
+        showNotification('Fonctionnalité d\'édition à venir', 'info');
+    }
+
     static deleteProject(id) {
         if (confirmAction('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
             ProjectService.delete(id);
             showNotification('Projet supprimé avec succès', 'success');
             this.loadProjects();
         }
+    }
+
+    static showNewTask() {
+        const content = document.getElementById('adminContent');
+        content.innerHTML = `
+            <div class="max-w-2xl mx-auto">
+                ${TaskForm.render()}
+            </div>
+        `;
+        
+        // Initialiser le formulaire avec callback spécifique admin
+        TaskForm.init((taskData) => {
+            try {
+                // Ajouter l'ID de l'admin comme userId
+                const currentUser = AuthService.getCurrentUser();
+                taskData.userId = currentUser.id;
+                
+                TaskService.add(taskData);
+                showNotification('Tâche ajoutée avec succès', 'success');
+                
+                // Réinitialiser le formulaire
+                TaskForm.reset();
+                
+                // Mettre à jour les stats
+                this.updateStats();
+                
+                // Optionnel : retourner à la liste des tâches
+                setTimeout(() => {
+                    this.switchView('tasks');
+                    this.showAllTasks();
+                }, 1500);
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        });
+    }
+
+    static showClientDetail(clientId) {
+        const content = document.getElementById('adminContent');
+        content.innerHTML = ClientDetailView.render(clientId);
+        ClientDetailView.init(clientId);
+    }
+
+    static showProjectDetail(projectId) {
+        const content = document.getElementById('adminContent');
+        content.innerHTML = ProjectDetailView.render(projectId);
+    }
+
+    static showNewProject(clientId) {
+        this.switchView('projects');
+        this.showProjects();
+        
+        // Après le rendu, pré-sélectionner le client
+        setTimeout(() => {
+            const clientSelect = document.getElementById('projectClientSelect');
+            if (clientSelect) {
+                clientSelect.value = clientId;
+                document.getElementById('addProjectBtn').click();
+            }
+        }, 100);
     }
 }
