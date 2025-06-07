@@ -2,19 +2,16 @@
  * Service d'authentification
  */
 class AuthService {
-    constructor() {
-        this.currentUser = null;
-        this.initializeUsers();
-    }
+    static currentUser = null;
 
-    initializeUsers() {
+    static initializeUsers() {
         // Forcer la réinitialisation pour corriger les données corrompues
         console.log('🔄 Forçage de la réinitialisation des utilisateurs');
         StorageService.save(STORAGE_KEYS.USERS, DEFAULT_USERS);
         console.log('✅ Utilisateurs réinitialisés:', DEFAULT_USERS);
     }
 
-    login(username, password) {
+    static login(username, password) {
         const users = StorageService.get(STORAGE_KEYS.USERS) || [];
         console.log('🔍 Recherche utilisateur:', { username, password });
         console.log('👥 Liste des utilisateurs:', users);
@@ -43,23 +40,29 @@ class AuthService {
         return null;
     }
 
-    logout() {
+    static logout() {
         this.currentUser = null;
         StorageService.remove(STORAGE_KEYS.CURRENT_USER);
     }
 
-    isAuthenticated() {
+    static isAuthenticated() {
         if (!this.currentUser) {
             this.currentUser = StorageService.get(STORAGE_KEYS.CURRENT_USER);
         }
         return this.currentUser !== null;
     }
 
-    getCurrentUser() {
+    static getCurrentUser() {
         return this.currentUser || StorageService.get(STORAGE_KEYS.CURRENT_USER);
     }
-    isAdmin() {
+
+    static isAdmin() {
         const user = this.getCurrentUser();
         return user && user.role === USER_ROLES.ADMIN;
     }
 }
+
+// Initialiser les utilisateurs au chargement
+document.addEventListener('DOMContentLoaded', () => {
+    AuthService.initializeUsers();
+});

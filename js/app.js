@@ -4,7 +4,6 @@
 
 class App {
     constructor() {
-        this.authService = new AuthService();
         this.currentUser = null;
         this.filterMode = FILTER_MODES.ALL;
         this.init();
@@ -23,8 +22,8 @@ class App {
     }
 
     checkAuthentication() {
-        if (this.authService.isAuthenticated()) {
-            this.currentUser = this.authService.getCurrentUser();
+        if (AuthService.isAuthenticated()) {
+            this.currentUser = AuthService.getCurrentUser();
             this.showMainApp();
         } else {
             this.showLoginPage();
@@ -40,7 +39,7 @@ class App {
         console.log('🔑 Tentative de connexion:', { username, password });
         console.log('📊 Utilisateurs disponibles:', StorageService.get(STORAGE_KEYS.USERS));
         
-        const user = this.authService.login(username, password);
+        const user = AuthService.login(username, password);
         
         console.log('👤 Résultat connexion:', user);
         
@@ -64,7 +63,7 @@ class App {
     }
 
     loadMainInterface() {
-        if (this.authService.isAdmin()) {
+        if (AuthService.isAdmin()) {
             this.loadAdminInterface();
         } else {
             this.loadUserInterface();
@@ -127,7 +126,7 @@ class App {
     }
 
     handleLogout() {
-        this.authService.logout();
+        AuthService.logout();
         this.currentUser = null;
         this.showLoginPage();
         showNotification('Déconnexion réussie', 'info');
