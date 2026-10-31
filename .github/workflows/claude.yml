@@ -1,0 +1,41 @@
+name: Claude (à la demande)
+
+# Écris « @claude ... » dans une PR ou une issue : Claude répond avec ton abonnement Claude
+# (secret CLAUDE_CODE_OAUTH_TOKEN), sans crédits Copilot.
+# Rien ne tourne sans « @claude » : un job ignoré ne consomme pas de minutes Actions.
+# Installé et mis à jour par ~/Dev/claude-github/install.sh : modifier ce fichier-là, puis relancer le script.
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+concurrency:
+  group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  claude:
+    # Seulement toi et tes collaborateurs : personne d'autre ne peut dépenser ton abonnement.
+    if: >-
+      contains(github.event.comment.body, '@claude') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@2dca132ff0e0c4094ce6048b422c6915a071210b # v1.0.247
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # sonnet : rapide, donc peu de minutes Actions. Mettre opus pour une review plus poussée.
+          claude_args: --model sonnet
